@@ -1,0 +1,249 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DriveX - Login / Sign Up</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="{% static 'DriveX/styles.css' %}">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="auth-body">
+
+    <div class="auth-container">
+        <!-- Close Button -->
+        <a href="{% url 'index' %}" class="close-btn"><i class="fa-solid fa-xmark"></i></a>
+
+        <div class="auth-wrapper">
+            <!-- Left Side: Interactive 3D/Image -->
+            <div class="auth-visual">
+                <div class="visual-content">
+                    <h2>Drive Your Dreams</h2>
+                    <p>Join the world's most premium car sharing community.</p>
+                </div>
+                <img src="{% static 'DriveX/assets/hero-suv.png' %}" alt="Premium Car" class="auth-bg-img">
+            </div>
+
+            <!-- Right Side: Forms -->
+            <div class="auth-forms">
+                <div class="auth-header">
+                    <a href="{% url 'index' %}" class="logo">Drive<span>X</span></a>
+                </div>
+
+                <!-- Role Selector -->
+                <div class="role-selector">
+                    <button class="role-btn active" data-role="renter">
+                        <i class="fa-solid fa-car-side"></i> Renter
+                    </button>
+                    <button class="role-btn" data-role="owner">
+                        <i class="fa-solid fa-key"></i> Car Owner
+                    </button>
+                </div>
+
+                {% if error %}
+                <div
+                    style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #fecaca;">
+                    {{ error }}
+                </div>
+                {% endif %}
+
+                {% if login_form.errors %}
+                <div
+                    style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #fecaca;">
+                    <p style="margin: 0; font-weight: bold;">Login Failed:</p>
+                    {% for field in login_form %}
+                    {% for error in field.errors %}
+                    <p style="margin: 0; font-size: 0.9rem;">{{ error }}</p>
+                    {% endfor %}
+                    {% endfor %}
+                    {% for error in login_form.non_field_errors %}
+                    <p style="margin: 0; font-size: 0.9rem;">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if register_form.errors %}
+                <div
+                    style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #fecaca;">
+                    <p style="margin: 0; font-weight: bold;">Registration Error:</p>
+                    <!-- Generic error message, detailed errors on fields ideally -->
+                    <p style="margin: 0; font-size: 0.9rem;">Please check the form fields.</p>
+                    {% for error in register_form.non_field_errors %}
+                    <p style="margin: 0; font-size: 0.9rem;">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Forms Container -->
+                <div class="forms-slider">
+
+                    <!-- Login Form -->
+                    <form id="login-form" class="auth-form active" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="login" value="1">
+                        <input type="hidden" name="role" id="login-role-input" value="renter">
+                        <h3>Welcome Back</h3>
+                        <p class="form-subtitle">Log in as <span class="current-role">Renter</span></p>
+
+                        <div class="input-group-auth">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="text" name="username" placeholder="Email Address" required>
+                        </div>
+                        <div class="input-group-auth">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" name="password" placeholder="Password" required>
+                        </div>
+
+                        <div class="form-actions">
+                            <label class="remember-me">
+                                <input type="checkbox"> Remember me
+                            </label>
+                            <a href="#" class="forgot-pass">Forgot Password?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary auth-submit">Log In</button>
+
+                        <div class="divider"><span>OR</span></div>
+
+                        <div class="social-login">
+                            <button type="button" class="social-btn"><i class="fa-brands fa-google"></i></button>
+                            <button type="button" class="social-btn"><i class="fa-brands fa-apple"></i></button>
+                        </div>
+
+                        <p class="switch-text">Don't have an account? <a href="#" id="switch-to-signup">Sign Up</a></p>
+
+                        <div
+                            style="margin-top: 1.5rem; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 1rem;">
+                            <a href="{% url 'Manager:login' %}"
+                                style="color: #94a3b8; font-size: 0.8rem; text-decoration: none;">
+                                <i class="fa-solid fa-shield-halved"></i> Manager Portal
+                            </a>
+                        </div>
+                    </form>
+
+                    <!-- Signup Form -->
+                    <form id="signup-form" class="auth-form" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="register" value="1">
+                        <input type="hidden" name="role" id="role-input" value="renter">
+
+                        <h3>Create Account</h3>
+                        <p class="form-subtitle">Register as <span class="current-role">Renter</span></p>
+
+                        <div class="input-row">
+                            <div class="input-group-auth">
+                                <i class="fa-regular fa-user"></i>
+                                <input type="text" name="first_name" placeholder="First Name" required>
+                            </div>
+                            <div class="input-group-auth">
+                                <i class="fa-regular fa-user"></i>
+                                <input type="text" name="last_name" placeholder="Last Name" required>
+                            </div>
+                        </div>
+
+                        <div class="input-group-auth">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email" name="email" placeholder="Email Address" required>
+                        </div>
+                        <!-- Owner Specific Field (Hidden by default) -->
+                        <div class="input-group-auth owner-field" style="display: none;">
+                            <label
+                                style="font-size: 0.8rem; margin-bottom: 5px; display: block; padding-left: 5px;">Profile
+                                Photo</label>
+                            <input type="file" name="profile_photo" style="padding-left: 1rem;">
+                        </div>
+
+                        <div class="input-group-auth owner-field" style="display: none;">
+                            <label
+                                style="font-size: 0.8rem; margin-bottom: 5px; display: block; padding-left: 5px;">Payment
+                                QR (Bank)</label>
+                            <input type="file" name="payment_qr" style="padding-left: 1rem;">
+                        </div>
+
+                        <div class="input-group-auth">
+                            <i class="fa-solid fa-phone"></i>
+                            <input type="text" name="mobile" placeholder="Mobile Number" required>
+                        </div>
+
+                        <div class="input-group-auth">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <input type="text" name="address" placeholder="Address" required>
+                        </div>
+
+                        <div class="input-group-auth">
+                            <i class="fa-solid fa-calendar"></i>
+                            <input type="text" name="dob" onfocus="(this.type='date')"
+                                placeholder="Date of Birth (YYYY-MM-DD)" required>
+                        </div>
+
+                        <div class="input-group-auth">
+                            <i class="fa-solid fa-id-card"></i>
+                            <input type="text" name="aadhaar_number" placeholder="Aadhaar Number" required>
+                        </div>
+
+                        <div class="input-group-auth">
+                            <label
+                                style="font-size: 0.8rem; margin-bottom: 5px; display: block; padding-left: 5px;">Upload
+                                Aadhaar (Img/PDF)</label>
+                            <input type="file" name="aadhaar_image" required style="padding-left: 1rem;">
+                        </div>
+
+                        <div class="input-group-auth">
+                            <i class="fa-solid fa-car"></i>
+                            <select name="license_type" required
+                                style="width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid #e5e7eb; background: #f8fafc; color: #6b7280; font-family: inherit;">
+                                <option value="" disabled selected>License Type</option>
+                                <option value="two_wheeler">Two Wheeler</option>
+                                <option value="four_wheeler">Four Wheeler</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group-auth">
+                            <i class="fa-solid fa-id-badge"></i>
+                            <input type="text" name="license_number" placeholder="License Number" required>
+                        </div>
+
+                        <div class="input-group-auth">
+                            <label
+                                style="font-size: 0.8rem; margin-bottom: 5px; display: block; padding-left: 5px;">Upload
+                                License (Img/PDF)</label>
+                            <input type="file" name="license_image" required style="padding-left: 1rem;">
+                        </div>
+
+                        <div class="input-group-auth">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" name="password" placeholder="Create Password" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary auth-submit">Create Account</button>
+
+                        <p class="switch-text">Already have an account? <a href="#" id="switch-to-login">Log In</a></p>
+
+                        <div
+                            style="margin-top: 1.5rem; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 1rem;">
+                            <a href="{% url 'Manager:login' %}"
+                                style="color: #94a3b8; font-size: 0.8rem; text-decoration: none;">
+                                <i class="fa-solid fa-shield-halved"></i> Manager Portal
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'DriveX/script.js' %}"></script>
+    <script>
+        // Inline script for auth logic to keep it simple or move to script.js
+        // Moving complex logic to script.js is cleaner but I will add a parameter to initAuth()
+    </script>
+</body>
+
+</html>

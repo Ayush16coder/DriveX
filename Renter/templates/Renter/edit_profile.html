@@ -1,0 +1,287 @@
+{% extends 'DriveX/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="profile-edit-section">
+    <div class="container">
+        <div class="profile-edit-card reveal">
+            <div class="card-header">
+                <h2>Renter Profile</h2>
+                <p>Manage your personal details and payment information</p>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" class="edit-form">
+                {% csrf_token %}
+
+                <h3 class="form-section-title"><i class="fa-regular fa-user"></i> Personal Information</h3>
+
+                <div class="input-row">
+                    <div class="input-group-auth">
+                        <i class="fa-regular fa-id-card"></i>
+                        {{ form.first_name }}
+                    </div>
+                    <div class="input-group-auth">
+                        <i class="fa-regular fa-id-card"></i>
+                        {{ form.last_name }}
+                    </div>
+                </div>
+
+                <div class="input-group-auth">
+                    <i class="fa-regular fa-envelope"></i>
+                    {{ form.email }}
+                </div>
+
+                <div class="input-group-auth">
+                    <i class="fa-solid fa-phone"></i>
+                    {{ form.mobile }}
+                </div>
+
+                <div class="input-group-auth">
+                    <i class="fa-solid fa-location-dot"></i>
+                    {{ form.address }}
+                </div>
+
+                <div class="divider"><span>Documents & Payments</span></div>
+
+                <div class="upload-grid">
+                    <div class="upload-item">
+                        <label>Profile Photo</label>
+                        <div class="image-preview-container">
+                            {% if form.instance.profile_photo %}
+                            <img src="{{ form.instance.profile_photo.url }}" class="preview-img profile-preview">
+                            {% else %}
+                            <div class="placeholder-img profile-placeholder"><i class="fa-solid fa-camera"></i></div>
+                            {% endif %}
+                        </div>
+                        <div class="file-input-wrapper">
+                            {{ form.profile_photo }}
+                        </div>
+                        {% if form.profile_photo.errors %}
+                        <div class="error-msg">{{ form.profile_photo.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="upload-item">
+                        <label>Payment QR Code</label>
+                        <div class="image-preview-container">
+                            {% if form.instance.payment_qr %}
+                            <img src="{{ form.instance.payment_qr.url }}" class="preview-img qr-preview">
+                            {% else %}
+                            <div class="placeholder-img qr-placeholder"><i class="fa-solid fa-qrcode"></i></div>
+                            {% endif %}
+                        </div>
+                        <div class="file-input-wrapper">
+                            {{ form.payment_qr }}
+                        </div>
+                        <p class="help-text">For P2P payments if applicable</p>
+                        {% if form.payment_qr.errors %}
+                        <div class="error-msg">{{ form.payment_qr.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-actions mt-4">
+                    <a href="{% url 'Renter:dashboard' %}" class="btn btn-text">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Scoped or shared styles - duplicating for self-containment or could move to styles.css */
+    .profile-edit-section {
+        padding-top: 8rem;
+        padding-bottom: 4rem;
+        background-color: #f8fafc;
+        min-height: 100vh;
+    }
+
+    .profile-edit-card {
+        background: white;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 3rem;
+        border-radius: 32px;
+        box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .card-header h2 {
+        font-size: 2.5rem;
+        color: var(--secondary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .card-header p {
+        color: var(--text-light);
+    }
+
+    .form-section-title {
+        font-size: 1.1rem;
+        color: var(--secondary-color);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .input-group-auth input,
+    .input-group-auth textarea {
+        width: 100%;
+        padding: 1rem 1rem 1rem 3rem;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s;
+        background: #f8fafc;
+        font-family: var(--font-main);
+    }
+
+    .input-group-auth textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .input-group-auth input:focus,
+    .input-group-auth textarea:focus {
+        background: white;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        outline: none;
+    }
+
+    .upload-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-top: 1rem;
+    }
+
+    .upload-item {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 20px;
+        text-align: center;
+        border: 1px solid var(--border-color);
+    }
+
+    .upload-item label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--secondary-color);
+    }
+
+    .image-preview-container {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 1.5rem;
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+        background: white;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .image-preview-container:has(.qr-preview),
+    .image-preview-container:has(.qr-placeholder) {
+        border-radius: 12px;
+    }
+
+    .preview-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .placeholder-img {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: #cbd5e1;
+    }
+
+    .file-input-wrapper input[type="file"] {
+        width: 100%;
+        font-size: 0.8rem;
+        color: var(--text-light);
+    }
+
+    .file-input-wrapper input[type="file"]::file-selector-button {
+        background: var(--primary-color);
+        color: white;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        margin-right: 1rem;
+        transition: background 0.2s;
+    }
+
+    .file-input-wrapper input[type="file"]::file-selector-button:hover {
+        background: var(--primary-dark);
+    }
+
+    .help-text {
+        font-size: 0.8rem;
+        color: #94a3b8;
+        margin-top: 0.5rem;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .btn-text {
+        padding: 0.75rem 1.5rem;
+        color: var(--text-light);
+    }
+
+    .btn-text:hover {
+        color: var(--secondary-color);
+        background: #f1f5f9;
+        border-radius: 50px;
+    }
+
+    @media(max-width: 768px) {
+        .upload-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .input-row {
+            flex-direction: column;
+            gap: 0;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const fieldMap = {
+            'id_first_name': 'First Name',
+            'id_last_name': 'Last Name',
+            'id_email': 'Email Address',
+            'id_mobile': 'Phone Number',
+            'id_address': 'Full Address'
+        };
+
+        for (const [id, placeholder] of Object.entries(fieldMap)) {
+            const el = document.getElementById(id);
+            if (el) el.placeholder = placeholder;
+        }
+    });
+</script>
+{% endblock %}

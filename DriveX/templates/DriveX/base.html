@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DriveX - Premium Car Rental</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="{% static 'DriveX/styles.css' %}?v=1.0">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Loading Animation -->
+    <div id="loader-wrapper">
+        <div class="loader-content">
+            <div class="car-loader">
+                <i class="fa-solid fa-car-side"></i>
+                <div class="wheels">
+                    <div class="wheel"></div>
+                    <div class="wheel"></div>
+                </div>
+            </div>
+            <div class="loading-text">Drive<span>X</span></div>
+        </div>
+    </div>
+    <script>
+        // Inline safety fallback in case external script fails/hangs
+        setTimeout(function () {
+            var loader = document.getElementById('loader-wrapper');
+            if (loader) loader.style.display = 'none';
+        }, 5000); // 5s absolute max timeout
+    </script>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="{% url 'index' %}" class="logo">Drive<span>X</span></a>
+            <ul class="nav-links">
+                <li><a href="{% url 'index' %}" class="active">Home</a></li>
+                <li><a href="#">Fleet</a></li>
+                <li><a href="#">Locations</a></li>
+                <li><a href="#">About Us</a></li>
+            </ul>
+            <div class="nav-auth">
+                {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                <a href="{% url 'Manager:dashboard' %}" class="btn btn-primary">Admin Panel</a>
+                {% else %}
+                <a href="{% url 'dashboard' %}" class="btn btn-primary">Dashboard</a>
+                {% endif %}
+                <a href="{% url 'logout' %}"
+                    style="margin-left: 10px; color: #64748b; text-decoration: none; font-size: 0.9rem;">Logout</a>
+                {% else %}
+                <a href="{% url 'auth' %}" class="btn-text">Log In</a>
+                <a href="{% url 'auth' %}" class="btn btn-primary">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Block -->
+    {% block content %}
+    {% endblock %}
+
+    <!-- Footer -->
+    <footer class="reveal">
+        <div class="container footer-container">
+            <div class="footer-col">
+                <a href="#" class="logo">Drive<span>X</span></a>
+                <p>Your trusted partner for reliable and premium car rentals worldwide.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <a href="#">About Us</a>
+                <a href="#">Careers</a>
+                <a href="#">Blog</a>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Terms & Conditions</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <p>Subscribe for latest offers.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Email address">
+                    <button class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="container copyright">
+            <p>&copy; 2026 DriveX. All rights reserved.</p>
+            <div style="margin-top: 1rem;">
+                <a href="{% url 'Manager:login' %}"
+                    style="color: #64748b; text-decoration: none; font-size: 0.8rem;">Admin Access</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'DriveX/script.js' %}?v=1.1"></script>
+</body>
+
+</html>

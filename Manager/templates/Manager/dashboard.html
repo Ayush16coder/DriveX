@@ -1,0 +1,297 @@
+{% extends 'DriveX/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="dashboard-container" style="padding: 2rem; background: #f8fafc; min-height: 100vh; margin-top: 60px;">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <div>
+            <h1 style="font-size: 2rem; color: #1e293b; font-weight: 700;">Manager Overview</h1>
+            <p style="color: #64748b;">Control Panel & Analytics</p>
+        </div>
+        <div style="text-align: right;">
+            <a href="{% url 'logout' %}"
+                style="background: white; color: #ef4444; padding: 0.6rem 1.2rem; border-radius: 8px; text-decoration: none; font-weight: 600; border: 1px solid #fee2e2;">
+                Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Analytics Grid -->
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+        <!-- Users Logic -->
+        <div
+            style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 4px solid #3b82f6;">
+            <p style="color: #64748b; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Total Users</p>
+            <h2 style="font-size: 2rem; color: #1e293b; margin: 0.5rem 0;">{{ total_users }}</h2>
+            <div style="display: flex; gap: 1rem; font-size: 0.8rem;">
+                <span style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> {{ active_users }} Active</span>
+                <span style="color: #ef4444;"><i class="fa-solid fa-ban"></i> {{ inactive_users }} Inactive</span>
+            </div>
+        </div>
+
+        <!-- Vehicles Logic -->
+        <div
+            style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 4px solid #8b5cf6;">
+            <p style="color: #64748b; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Total Vehicles
+            </p>
+            <h2 style="font-size: 2rem; color: #1e293b; margin: 0.5rem 0;">{{ total_vehicles }}</h2>
+            <div style="font-size: 0.8rem; color: #f59e0b;">
+                <i class="fa-solid fa-clock"></i> {{ pending_vehicles_count }} Pending Approval
+            </div>
+        </div>
+
+        <!-- Revenue -->
+        <div
+            style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 4px solid #10b981;">
+            <p style="color: #64748b; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Total Revenue</p>
+            <h2 style="font-size: 2rem; color: #1e293b; margin: 0.5rem 0;">${{ revenue }}</h2>
+            <p style="color: #64748b; font-size: 0.8rem;">Lifetime Gross</p>
+        </div>
+
+        <!-- Alert Actions -->
+        <div
+            style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 4px solid #f59e0b;">
+            <p style="color: #64748b; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Action Items</p>
+            <h2 style="font-size: 2rem; color: #1e293b; margin: 0.5rem 0;">{{ action_items_count }}</h2>
+            <p style="color: #64748b; font-size: 0.8rem;">Requires Attention</p>
+        </div>
+    </div>
+
+    <!-- Main Content Area: Tabs -->
+    <div style="background: white; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden;">
+
+        <!-- PENDING REQUESTS SECTION -->
+        <div style="padding: 2rem; border-bottom: 5px solid #f1f5f9;">
+            <h3 style="margin-bottom: 1.5rem; color: #f59e0b;"><i class="fa-solid fa-bell"></i> Pending Approvals</h3>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <!-- Users Pending -->
+                <div>
+                    <h4 style="font-size: 1rem; color: #64748b; margin-bottom: 1rem;">Unverified Users</h4>
+                    {% if unverified_users %}
+                    {% for profile in unverified_users %}
+                    <div
+                        style="background: #fffbeb; border: 1px solid #fcd34d; padding: 1rem; border-radius: 8px; margin-bottom: 0.8rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong class="pending-user-name">
+                                {{ profile.user.first_name }}
+                                {{ profile.user.last_name }}
+                            </strong>
+                            <small style="color: #92400e;">
+                                {% if profile.role == 'owner' %}
+                                Car Owner
+                                {% elif profile.role == 'manager' %}
+                                Manager
+                                {% else %}
+                                Renter
+                                {% endif %}
+                                • ID: {{ profile.aadhaar_number }}
+                            </small>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <a href="{{ profile.aadhaar_image.url }}" target="_blank"
+                                style="font-size: 0.8rem; text-decoration: underline; color: #b45309;">Doc</a>
+                            <a href="{% url 'Manager:verify_user' profile.id %}"
+                                style="background: #16a34a; color: white; padding: 0.3rem 0.6rem; border-radius: 4px; text-decoration: none; font-size: 0.8rem;">Verify</a>
+                            <a href="{% url 'Manager:reject_user' profile.id %}"
+                                style="background: #dc2626; color: white; padding: 0.3rem 0.6rem; border-radius: 4px; text-decoration: none; font-size: 0.8rem;">Block</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p style="color: #94a3b8; font-style: italic;">No pending users.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Vehicles Pending -->
+                <div>
+                    <h4 style="font-size: 1rem; color: #64748b; margin-bottom: 1rem;">Pending Vehicles</h4>
+                    {% if pending_vehicles %}
+                    {% for car in pending_vehicles %}
+                    <div
+                        style="background: #fffbeb; border: 1px solid #fcd34d; padding: 1rem; border-radius: 8px; margin-bottom: 0.8rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 0.8rem; align-items: center;">
+                            <img src="{{ car.image.url }}"
+                                style="width: 40px; height: 40px; border-radius: 6px; object-fit: cover;">
+                            <div>
+                                <strong style="display: block; color: #78350f;">{{ car.brand }} {{ car.model }}</strong>
+                                <small style="color: #92400e;">Owner: {{ car.owner.user.first_name }}</small>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <a href="{{ car.rc_book.url }}" target="_blank"
+                                style="font-size: 0.8rem; text-decoration: underline; color: #b45309;">RC</a>
+                            <a href="{% url 'Manager:approve_vehicle' car.id %}"
+                                style="background: #16a34a; color: white; padding: 0.3rem 0.6rem; border-radius: 4px; text-decoration: none; font-size: 0.8rem;">Approve</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p style="color: #94a3b8; font-style: italic;">No pending vehicles.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- ALL LISTS SECTION -->
+        <div style="padding: 2rem;">
+            <h3 style="margin-bottom: 1.5rem; color: #1e293b;">Data Management</h3>
+
+            <!-- Tab Headers -->
+            <div style="display: flex; gap: 1rem; border-bottom: 2px solid #e2e8f0; margin-bottom: 1.5rem;">
+                <button onclick="showTab('users')" id="btn-users" class="tab-btn active">All Users</button>
+                <button onclick="showTab('vehicles')" id="btn-vehicles" class="tab-btn">All Vehicles</button>
+            </div>
+
+            <!-- Users Table -->
+            <div id="tab-users" style="display: block;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr
+                            style="background: #f8fafc; text-align: left; color: #64748b; font-size: 0.85rem; text-transform: uppercase;">
+                            <th style="padding: 1rem;">User</th>
+                            <th style="padding: 1rem;">Role</th>
+                            <th style="padding: 1rem;">Status</th>
+                            <th style="padding: 1rem;">Docs</th>
+                            <th style="padding: 1rem;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for profile in all_users %}
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 1rem;">
+                                <strong>{{ profile.user.first_name }} {{ profile.user.last_name }}</strong><br>
+                                <small style="color: #94a3b8;">{{ profile.user.email }}</small>
+                            </td>
+                            <td style="padding: 1rem;">
+                                <span
+                                    style="background: #f1f5f9; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.8rem;">
+                                    {% if profile.role == 'owner' %}
+                                    Car Owner
+                                    {% elif profile.role == 'manager' %}
+                                    Manager
+                                    {% else %}
+                                    Renter
+                                    {% endif %}
+                                </span>
+                            </td>
+                            <td style="padding: 1rem;">
+                                {% if profile.user.is_active %}
+                                <span style="color: #10b981; font-weight: 600; font-size: 0.9rem;">Active</span>
+                                {% else %}
+                                <span style="color: #ef4444; font-weight: 600; font-size: 0.9rem;">Inactive</span>
+                                {% endif %}
+                                {% if profile.is_verified %}
+                                <i class="fa-solid fa-check-circle" style="color: #3b82f6; margin-left: 0.5rem;"
+                                    title="Verified"></i>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 1rem;">
+                                {% if profile.aadhaar_image %}
+                                <a href="{{ profile.aadhaar_image.url }}" target="_blank"
+                                    style="font-size: 0.8rem; color: #3b82f6;">View ID</a>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 1rem;">
+                                {% if not profile.user.is_staff %}
+                                {% if profile.user.is_active %}
+                                <a href="{% url 'Manager:reject_user' profile.id %}"
+                                    style="color: #ef4444; font-size: 0.8rem; text-decoration: none; border: 1px solid #ef4444; padding: 0.3rem 0.6rem; border-radius: 4px;">Deactivate</a>
+                                {% else %}
+                                <!-- Reactivate Logic could go here -->
+                                <span style="color: #94a3b8; font-size: 0.8rem;">Banned</span>
+                                {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Vehicles Table -->
+            <div id="tab-vehicles" style="display: none;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr
+                            style="background: #f8fafc; text-align: left; color: #64748b; font-size: 0.85rem; text-transform: uppercase;">
+                            <th style="padding: 1rem;">Vehicle</th>
+                            <th style="padding: 1rem;">Owner</th>
+                            <th style="padding: 1rem;">Status</th>
+                            <th style="padding: 1rem;">Docs</th>
+                            <th style="padding: 1rem;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for car in all_vehicles %}
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 1rem;">
+                                <strong>{{ car.brand }} {{ car.model }}</strong><br>
+                                <small style="color: #94a3b8;">{{ car.license_plate }}</small>
+                            </td>
+                            <td style="padding: 1rem;">{{ car.owner.user.first_name }}</td>
+                            <td style="padding: 1rem;">
+                                {% if car.is_approved %}
+                                <span style="color: #10b981; font-weight: 600; font-size: 0.9rem;">Approved</span>
+                                {% else %}
+                                <span style="color: #f59e0b; font-weight: 600; font-size: 0.9rem;">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 1rem;">
+                                {% if car.rc_book %}
+                                <a href="{{ car.rc_book.url }}" target="_blank"
+                                    style="font-size: 0.8rem; color: #3b82f6;">RC</a>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 1rem;">
+                                <a href="{% url 'Manager:reject_vehicle' car.id %}"
+                                    style="color: #ef4444; font-size: 0.8rem; text-decoration: none; border: 1px solid #ef4444; padding: 0.3rem 0.6rem; border-radius: 4px;">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function showTab(tabName) {
+        // Toggle Content
+        document.getElementById('tab-users').style.display = (tabName === 'users') ? 'block' : 'none';
+        document.getElementById('tab-vehicles').style.display = (tabName === 'vehicles') ? 'block' : 'none';
+
+        // Toggle Active State
+        document.getElementById('btn-users').classList.toggle('active', tabName === 'users');
+        document.getElementById('btn-vehicles').classList.toggle('active', tabName === 'vehicles');
+    }
+</script>
+
+<style>
+    .pending-user-name {
+        display: block;
+        color: #78350f;
+    }
+
+    .tab-btn {
+        padding: 0.8rem 1.5rem;
+        background: none;
+        border: none;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+        color: #3b82f6;
+        border-bottom: 2px solid #3b82f6;
+    }
+</style>
+{% endblock %}

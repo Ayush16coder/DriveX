@@ -1,0 +1,139 @@
+{% extends 'DriveX/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<header class="hero">
+    <div class="container hero-container">
+        <div class="hero-content reveal">
+            <h1>Find Your Perfect <br><span class="highlight">Drive</span> Today.</h1>
+            <p>Experience the freedom of the road with our premium fleet. Unbeatable prices, unlimited miles, and
+                24/7 support.</p>
+
+            <!-- Search Form -->
+            <div class="search-box">
+                <div class="search-item">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <div class="input-group">
+                        <label>Pick-up Location</label>
+                        <input type="text" placeholder="City, Airport, or Address">
+                    </div>
+                </div>
+                <div class="search-item">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <div class="input-group">
+                        <label>Pick-up Date</label>
+                        <input type="date">
+                    </div>
+                </div>
+                <div class="search-item">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <div class="input-group">
+                        <label>Drop-off Date</label>
+                        <input type="date">
+                    </div>
+                </div>
+                <button class="btn btn-primary search-btn">Search Cars</button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="{% static 'DriveX/assets/hero-suv.png' %}" alt="Luxury SUV on coastal road">
+        </div>
+    </div>
+</header>
+
+<!-- Brands Banner -->
+<div class="brands-banner">
+    <div class="container">
+        <p>Trusted by over 50k+ customers worldwide</p>
+        <div class="brand-logos">
+            <i class="fa-brands fa-aws"></i>
+            <i class="fa-brands fa-google"></i>
+            <i class="fa-brands fa-airbnb"></i>
+            <i class="fa-brands fa-uber"></i>
+            <i class="fa-brands fa-stripe"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Fleet Categories -->
+<section class="fleet section">
+    <div class="container">
+        <div class="section-header reveal">
+            <h2>Explore Our <span class="highlight">Fleet</span></h2>
+            <p>Choose from our diverse collection of vehicles for any occasion.</p>
+        </div>
+
+        <div class="categories-grid reveal reveal-delay-2">
+            <!-- Economy -->
+            <div class="category-card">
+                <div class="cat-image">
+                    <img src="{% static 'DriveX/assets/cat-economy.png' %}" alt="Economy Car">
+                </div>
+                <div class="cat-info">
+                    <h3>Economy</h3>
+                    <p>Fuel efficient & compact</p>
+                    <span class="price">from $35/day</span>
+                    <a href="#" class="btn-link">View Cars <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Luxury -->
+            <div class="category-card featured">
+                <div class="tag">Popular</div>
+                <div class="cat-image">
+                    <img src="{% static 'DriveX/assets/cat-luxury.png' %}" alt="Luxury Sedan">
+                </div>
+                <div class="cat-info">
+                    <h3>Luxury & Executive</h3>
+                    <p>Premium comfort & style</p>
+                    <span class="price">from $89/day</span>
+                    <a href="#" class="btn-link">View Cars <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Sport -->
+            <div class="category-card">
+                <div class="cat-image">
+                    <img src="{% static 'DriveX/assets/cat-sport.png' %}" alt="Sports Car">
+                </div>
+                <div class="cat-info">
+                    <h3>Sports & Convertible</h3>
+                    <p>Performance & thrill</p>
+                    <span class="price">from $120/day</span>
+                    <a href="#" class="btn-link">View Cars <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features section">
+    <div class="container">
+        <div class="features-grid reveal">
+            <div class="feature-item">
+                <div class="icon-box">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+                <h3>Best Price Guarantee</h3>
+                <p>We ensure you get the most competitive rates in the market with no hidden fees.</p>
+            </div>
+            <div class="feature-item">
+                <div class="icon-box">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+                <h3>24/7 Customer Support</h3>
+                <p>Our dedicated team is available around the clock to assist you with any questions.</p>
+            </div>
+            <div class="feature-item">
+                <div class="icon-box">
+                    <i class="fa-solid fa-calendar-xmark"></i>
+                </div>
+                <h3>Free Cancellation</h3>
+                <p>Plans change. Cancel your booking for free up to 24 hours before pick-up.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
